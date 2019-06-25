@@ -1,0 +1,23 @@
+{
+  "name": "clownfish",
+  "version": "0.0.1",
+  "description": "A relay to save email attachments in Google Drive sent to an address with mailgun.",
+  "main": "index.js",
+  "repository": "https://github.com/ima-worldhealth/clownfish",
+  "author": "Jonathan Niles <jonathanwniles@gmail.com>",
+  "license": "GPL-3.0-only",
+  "private": false,
+  "devDependencies": {
+    "eslint": "^6.0.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "debug": "^4.1.1",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "googleapis": "^40.0.0"
+  }
+}
