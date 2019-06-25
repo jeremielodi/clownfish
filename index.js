@@ -28,7 +28,11 @@ app.get('/', (req, res) => {
 app.post('/receive', async (req, res, next) => {
   try {
     const mail = req.body;
-    const [structure, reportName] = mail.subject.split('-');
+
+    // support multiple kinds of separators.
+    const separator = mail.subject.includes('-') ? '-' : '–';
+
+    const [structure, reportName] = mail.subject.split(separator);
 
     // normalize reporting structure names
     const normalizedStructure = structure.toLowerCase().trim();
@@ -45,7 +49,6 @@ app.post('/receive', async (req, res, next) => {
       folder = await api.createFolder(normalizedStructure);
       debug('Folder created!');
     }
-
 
     // id where to upload the file
     const folderId = folder.id;
@@ -76,7 +79,7 @@ app.post('/receive', async (req, res, next) => {
 
     res.sendStatus(200);
   } catch (e) {
-    debug('An error occurred: %j', e);
+    debug('An error occurred: %o', e);
     next(e);
   }
 });
