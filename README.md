@@ -9,5 +9,5 @@ Send an email to the clownfish email address with the subject line `${structure}
 
 The application will download any attachments and upload them to the Google Drive folder with the name `${structure}`.  If this folder does not exist, it will first create it.
 
-# LICENSE
-MIT
+## License
+[MIT](./LICENSE)
