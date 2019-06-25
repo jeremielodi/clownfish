@@ -42,8 +42,5 @@ async function createFolder(name) {
   return data;
 }
 
-function shareFolder() {}
-
 exports.findFolderIdByName = findFolderIdByName;
 exports.createFolder = createFolder;
-exports.shareFolder = shareFolder;

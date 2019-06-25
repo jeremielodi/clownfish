@@ -69,7 +69,7 @@ app.post('/receive', async (req, res, next) => {
         // eslint-disable-next-line
         await drive.files.create({
           resource: { name: bulk.filename, parents: [folderId] },
-          media: { mimeType: bulk.contentType, body: bulk.data },
+          media: { mimeType: bulk.mimeType, body: bulk.data },
           fields: 'id',
         });
       }

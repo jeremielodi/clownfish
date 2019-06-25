@@ -636,6 +636,11 @@ file-entry-cache@^5.0.1:
   dependencies:
     flat-cache "^2.0.1"
 
+file-type@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-12.0.0.tgz#07a665fab1162aff92284f98953b56c7d74bb7fc"
+  integrity sha512-VV3aQAyoV/fHl0I9uU3/DGjItgh5nylAoJPHOXkZXHW4nFFrxJnHR2xdVqsqyw/9fqYy80m+tS+Rf77w0FTKqg==
+
 finalhandler@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.1.2.tgz#b7e7d000ffd11938d0fdb053506f6ebabe9f587d"
