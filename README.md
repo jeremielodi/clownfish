@@ -5,9 +5,16 @@ This application is a relay between [mailgun](https://www.mailgun.com/) and [Goo
 
 ## How it works
 
-Send an email to the clownfish email address with the subject line `${structure} - ${report name}`.
+As prerequisite, you must have a mailgun account and a domain the hosts the clownfish application.  For example: `clownfish.example.com`.
+ 1. Configure a Mailgun route with the action `notify()` and callback url `clownfish.example.com/receive`.
+ 2. Configure your google account with an OAuth account to use, and put the resulting `credentials.json` in the `credentials/` folder.
+ 3. Create a folder on Google Drive, and share it with relevant parties.  Determine the folder ID from the Google Drive URL and add the id as an environmental variable as `GDRIVE_REPORT_DIR_ID`.
+ 3. Deploy the application at `clownfish.example.com`.
 
-The application will download any attachments and upload them to the Google Drive folder with the name `${structure}`.  If this folder does not exist, it will first create it.
+Send an email to the clownfish email address with the subject line `${structure} - ${report name}`.  The application will download any attachments on that email and upload them to a Google Drive folder named `${structure}`.  If this folder does not exist, it will first create the folder and then upload the files to the folder.
+
+## Overview
+![Clownfish Overview](./docs/overview.svg "How it works")
 
 ## License
 [MIT](./LICENSE)
