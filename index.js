@@ -64,11 +64,12 @@ app.post('/receive', async (req, res, next) => {
         // eslint-disable-next-line
         const bulk = await email.downloadAttachment(attachment);
 
-        debug(`Uploading: ${attachment.name}`);
+        const fname = `${normalizedReportName}.${bulk.ext}`;
+        debug(`Uploading: ${fname}`);
 
         // eslint-disable-next-line
         await drive.files.create({
-          resource: { name: bulk.filename, parents: [folderId] },
+          resource: { name: fname, parents: [folderId] },
           media: { mimeType: bulk.mimeType, body: bulk.data },
           fields: 'id',
         });

@@ -25,6 +25,7 @@ async function downloadAttachment(attachment) {
     data: bufferToStream(res.data),
     filename: attachment.name,
     mimeType: type.mime,
+    ext: type.ext,
   };
 }
 
