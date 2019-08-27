@@ -10,6 +10,7 @@ const express = require('express');
 const api = require('./api');
 const email = require('./email');
 const drive = require('./drive');
+const utils = require('./utils');
 
 const app = express();
 app.use(require('body-parser').json());
@@ -29,14 +30,7 @@ app.post('/receive', async (req, res, next) => {
   try {
     const mail = req.body;
 
-    // support multiple kinds of separators.
-    const separator = mail.subject.includes('-') ? '-' : '–';
-
-    const [structure, reportName] = mail.subject.split(separator);
-
-    // normalize reporting structure names
-    const normalizedStructure = structure.toLowerCase().trim();
-    const normalizedReportName = reportName.toLowerCase().trim();
+    const { normalizedStructure, normalizedReportName } = utils.parseSubjectLine(mail.subject);
 
     debug('received a message!');
     debug(`structure: ${normalizedStructure}`);
