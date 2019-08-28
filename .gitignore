@@ -19,15 +19,8 @@ package-lock.json
 node_modules/
 npm-debug.log
 
-# ignore bower installation target
-client/vendor/
-
 # ignore built files
 bin/
-
-# ignore the upload folder
-client/src/upload/
-test/artifacts/
 
 # ignore configuration
 .env.production
@@ -41,13 +34,6 @@ nbproject/
 
 # ignore istanbul generated folders
 .nyc_output/
-
-# Ignore test files
-sh/build-database-test.sh
-
-# ignore documentation bad files
-docs/_site/
-docs/.sass-cache/
 
 yarn-error.log
 *.log

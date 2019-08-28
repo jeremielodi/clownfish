@@ -1,3 +1,7 @@
+const debug = require('debug')('clownfish');
+const drive = require('./drive');
+const email = require('./email');
+
 function detectSeparator(subject) {
   if (subject.includes('--')) {
     return '--';
@@ -44,4 +48,27 @@ function parseSubjectLine(subject) {
   return { normalizedStructure, normalizedReportName };
 }
 
+/**
+ *
+ *
+ */
+async function uploadAttachmentsToGoogleDrive(attachments, normalizedReportName, parentFolderId) {
+  // eslint-disable-next-line
+  for (const attachment of attachments) {
+    // eslint-disable-next-line
+    const bulk = await email.downloadAttachment(attachment);
+
+    const fname = `${normalizedReportName}.${bulk.ext}`;
+    debug(`Uploading: ${fname}`);
+
+    // eslint-disable-next-line
+    await drive.files.create({
+      resource: { name: fname, parents: [parentFolderId] },
+      media: { mimeType: bulk.mimeType, body: bulk.data },
+      fields: 'id',
+    });
+  }
+}
+
 exports.parseSubjectLine = parseSubjectLine;
+exports.uploadAttachmentsToGoogleDrive = uploadAttachmentsToGoogleDrive;
