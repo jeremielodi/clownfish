@@ -6,29 +6,44 @@ const {
 
 const debug = require('debug')('clownfish');
 const express = require('express');
+const fs = require('fs');
+const template = require('lodash.template');
 
 const api = require('./api');
-const email = require('./email');
-const drive = require('./drive');
 const utils = require('./utils');
+const sysinfo = require('./sysinfo');
+const logger = require('./logger');
+
+const render = template(fs.readFileSync('./views/index.html'));
 
 const app = express();
 app.use(require('body-parser').json());
 app.use(require('body-parser').urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.status(200).send('Clownfish is working');
+  const info = sysinfo();
+  const rendered = render({
+    title: 'Clownfish',
+    subtitle: 'by IMA World Health',
+    log: logger.read(10),
+    info,
+  });
+
+  res.status(200).send(rendered);
 });
 
 /**
  * @function receive
  *
  * @description
- * Receives post requests from mailgun and processes them to store them on Google Drive.
+ * Receives post requests from mailgun and processes them to store them on Google Drive.  In order
+ * to route multiple Google Drive accounts, we embed the Google Drive folder ID into the URL.
  */
-app.post('/receive', async (req, res, next) => {
+app.post('/:googleDriveParentFolderId/receive', async (req, res, next) => {
   try {
+    const start = new Date();
     const mail = req.body;
+    const { googleDriveParentFolderId } = req.params;
 
     const { normalizedStructure, normalizedReportName } = utils.parseSubjectLine(mail.subject);
 
@@ -36,41 +51,31 @@ app.post('/receive', async (req, res, next) => {
     debug(`structure: ${normalizedStructure}`);
     debug(`report name: ${normalizedReportName}`);
 
-    let folder = await api.findFolderIdByName(normalizedStructure);
-    if (!folder) {
-      debug(`Did not locate folder on Google Drive with name "${normalizedStructure}".  Creating a new one.`);
-
-      folder = await api.createFolder(normalizedStructure);
-      debug('Folder created!');
-    }
-
-    // id where to upload the file
-    const folderId = folder.id;
+    // ensures that this folder exists and returns its ID.
+    const folderId = await api.ensureFolder(normalizedStructure, googleDriveParentFolderId);
 
     debug(`Located folder for ${normalizedStructure} with id: ${folderId}`);
 
+    // grab attachments if they exist.
     const attachments = mail.attachments && JSON.parse(mail.attachments);
 
     if (attachments) {
       debug(`Located ${attachments.length} attachments.`);
-      // eslint-disable-next-line
-      for (const attachment of attachments) {
-        // eslint-disable-next-line
-        const bulk = await email.downloadAttachment(attachment);
-
-        const fname = `${normalizedReportName}.${bulk.ext}`;
-        debug(`Uploading: ${fname}`);
-
-        // eslint-disable-next-line
-        await drive.files.create({
-          resource: { name: fname, parents: [folderId] },
-          media: { mimeType: bulk.mimeType, body: bulk.data },
-          fields: 'id',
-        });
-      }
+      await utils.uploadAttachmentsToGoogleDrive(attachments, normalizedReportName, folderId);
     }
 
     debug(`Finished processing ${attachments.length} attachments`);
+
+    // write to log
+    logger.write({
+      googleDriveParentFolderId,
+      normalizedStructure,
+      normalizedReportName,
+      attachments,
+      start,
+      sender: mail.from,
+      end: new Date(),
+    });
 
     res.sendStatus(200);
   } catch (e) {
