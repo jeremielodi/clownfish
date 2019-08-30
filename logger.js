@@ -34,7 +34,7 @@ function write(opts) {
 
 function read(n) {
   return db.get('events')
-    .take(n)
+    .takeRight(n)
     .value();
 }
 
