@@ -7,10 +7,14 @@
   "author": "Jonathan Niles <jonathanwniles@gmail.com>",
   "license": "GPL-3.0-only",
   "private": false,
+  "scripts": {
+    "release": "release-it --disable-metrics"
+  },
   "devDependencies": {
     "eslint": "^6.0.1",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.17.3"
+    "eslint-plugin-import": "^2.17.3",
+    "release-it": "^12.3.6"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -23,5 +27,9 @@
     "googleapis": "^42.0.0",
     "lodash.template": "^4.5.0",
     "lowdb": "^1.0.0"
+  },
+  "release-it" : {
+    "github" : true,
+    "npm" : false
   }
 }
