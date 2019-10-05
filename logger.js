@@ -62,6 +62,10 @@ class Logger {
 
       this.db.all(query, (err, rows) => {
         if (err) { return reject(err); }
+        rows.forEach((row) => {
+          // eslint-disable-next-line no-param-reassign
+          row.attachments = row.attachments ? JSON.parse(row.attachments) : [];
+        });
         return resolve(rows);
       });
     });

@@ -20,16 +20,21 @@ const app = express();
 app.use(require('body-parser').json());
 app.use(require('body-parser').urlencoded({ extended: true }));
 
-app.get('/', async (req, res) => {
-  const info = sysinfo();
-  const rendered = render({
-    title: 'Clownfish',
-    subtitle: 'by IMA World Health',
-    log: await logger.read(10),
-    info,
-  });
+app.get('/', async (req, res, next) => {
+  try {
+    const info = sysinfo();
+    const rendered = render({
+      title: 'Clownfish',
+      subtitle: 'by IMA World Health',
+      log: await logger.read(10),
+      info,
+    });
 
-  res.status(200).send(rendered);
+    res.status(200).send(rendered);
+  } catch (e) {
+    debug('An error occurred: %o', e);
+    next(e);
+  }
 });
 
 /**
