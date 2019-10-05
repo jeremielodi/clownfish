@@ -12,7 +12,7 @@ const template = require('lodash.template');
 const api = require('./api');
 const utils = require('./utils');
 const sysinfo = require('./sysinfo');
-const logger = require('./logger');
+const logger = require('./logger')('clownfish.db');
 
 const render = template(fs.readFileSync('./views/index.html'));
 
@@ -20,12 +20,12 @@ const app = express();
 app.use(require('body-parser').json());
 app.use(require('body-parser').urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   const info = sysinfo();
   const rendered = render({
     title: 'Clownfish',
     subtitle: 'by IMA World Health',
-    log: logger.read(10),
+    log: await logger.read(10),
     info,
   });
 
